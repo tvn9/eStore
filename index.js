@@ -19,10 +19,7 @@ const server = http.createServer((req, res) => {
       fs.readFile(`${__dirname}/templates/overviewTemplate.html`, 'utf-8', (err, data) => {
          let oveviewOutput = data;
 
-
-
          fs.readFile(`${__dirname}/templates/productCardTemplate.html`, 'utf-8', (err, data) => {
-
 
             const cardsOutput = laptopData.map(el => replaceTemplate(data, el)).join('');
             oveviewOutput = oveviewOutput.replace('{%CARDS%}', cardsOutput);
@@ -32,7 +29,6 @@ const server = http.createServer((req, res) => {
 
       });
       
-
    } else if (pathName === '/laptop' && id < laptopData.length) {
       res.writeHead(200, { 'Content-type': 'text/html' });
 
@@ -41,7 +37,12 @@ const server = http.createServer((req, res) => {
          const output = replaceTemplate(data, laptop);
          res.end(output);
       });
-      // res.end(`This is a LAPTOP page ${id}`);
+   
+   } else if ((/\.(jpg|jpeg|png|gif)$/i).test(pathName)) {
+      fs.readFile(`${__dirname}/data/img/${pathName}`, (err, data) => {
+         res.writeHead(200, { 'Content-type': 'image/jpg' });
+         res.end(data);
+      });
    } else {
       res.writeHead(404, { 'Content-type': 'text/html' });
       res.end('URL does not exist!');
