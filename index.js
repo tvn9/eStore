@@ -4,18 +4,44 @@ const url = require('url');
 
 const json = fs.readFileSync(`${__dirname}/data/data.json`, 'utf-8');
 const laptopData = JSON.parse(json);
+console.log(laptopData);
 
 const server = http.createServer((req, res) => {
 
    const pathName = url.parse(req.url, true).pathname;
-   console.log(pathName);
+   const id = url.parse(req.url, true).query.id;
+   // console.log(pathName);
 
+   // PRODUCT OVERVIEW
    if (pathName === '/products' || pathName === '/') {
       res.writeHead(200, { 'Content-type': 'text/html' });
-      res.end('This is a PRODUCTS page');
-   } else if (pathName === '/laptop') {
+     
+      fs.readFile(`${__dirname}/templates/overviewTemplate.html`, 'utf-8', (err, data) => {
+         let oveviewOutput = data;
+
+
+
+         fs.readFile(`${__dirname}/templates/productCardTemplate.html`, 'utf-8', (err, data) => {
+
+
+            const cardsOutput = laptopData.map(el => replaceTemplate(data, el)).join('');
+            oveviewOutput = oveviewOutput.replace('{%CARDS%}', cardsOutput);
+
+            res.end(oveviewOutput);
+         });
+
+      });
+      
+
+   } else if (pathName === '/laptop' && id < laptopData.length) {
       res.writeHead(200, { 'Content-type': 'text/html' });
-      res.end('This is a LAPTOP page');
+
+      fs.readFile(`${__dirname}/templates/laptopTemplate.html`, 'utf-8', (err, data) => {
+         const laptop = laptopData[id];
+         const output = replaceTemplate(data, laptop);
+         res.end(output);
+      });
+      // res.end(`This is a LAPTOP page ${id}`);
    } else {
       res.writeHead(404, { 'Content-type': 'text/html' });
       res.end('URL does not exist!');
@@ -24,5 +50,19 @@ const server = http.createServer((req, res) => {
 });
 
 server.listen(1337, '127.0.0.1', () => {
-   console.log('Listening for request now');
+   console.log('Listening for requests now');
 });
+
+function replaceTemplate(originalHtml, laptop) {
+
+   let output = originalHtml.replace(/{%PRODUCTNAME%}/g, laptop.productName);
+   output = output.replace(/{%IMAGE%}/g, laptop.image);
+   output = output.replace(/{%PRICE%}/g, laptop.price);
+   output = output.replace(/{%SCREEN%}/g, laptop.screen);
+   output = output.replace(/{%CPU%}/g, laptop.cpu);
+   output = output.replace(/{%STORAGE%}/g, laptop.storage);
+   output = output.replace(/{%RAM%}/g, laptop.ram);
+   output = output.replace(/{%DESCRIPTION%}/g, laptop.description);
+   output = output.replace(/{%ID%}/g, laptop.id);
+   return output;
+}
