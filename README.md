@@ -43,7 +43,7 @@ const server = http.createServer((req, res) => {
    // PRODUCT OVERVIEW
    if (pathName === '/products' || pathName === '/') {
       res.writeHead(200, { 'Content-type': 'text/html' });
-     
+
       fs.readFile(`${__dirname}/templates/overviewTemplate.html`, 'utf-8', (err, data) => {
          let oveviewOutput = data;
 
@@ -65,7 +65,7 @@ const server = http.createServer((req, res) => {
          const output = replaceTemplate(data, laptop);
          res.end(output);
       });
-   
+
    } else if ((/\.(jpg|jpeg|png|gif)$/i).test(pathName)) {
       fs.readFile(`${__dirname}/data/img/${pathName}`, (err, data) => {
          res.writeHead(200, { 'Content-type': 'image/jpg' });
@@ -331,4 +331,3 @@ function replaceTemplate(originalHtml, laptop) {
    }
 </style>
 ```
-
