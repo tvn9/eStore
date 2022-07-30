@@ -5,7 +5,7 @@ An online laptop store homework project on Nodejs, Javascript, CSS, and HTML.
 The goal of the exercise is to create a simple ecommerce store front page that requests products data from Node server, using pure JavaScript for backend development.
 
 ## Run App
-![Run App](tvn9.github.com/eStore)
+[Run App](tvn9.github.io/eStore)
 
 ## Technology Used
 
